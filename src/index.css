@@ -1,0 +1,145 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Dayflow HRMS Design System
+   Primary: Soft Purple (#9B59B6)
+   Background: Dark charcoal gradient (#0E0E10 → #1A1A1D)
+   Card: Dark gray (#1F1F23)
+   All colors in HSL format
+*/
+
+@layer base {
+  :root {
+    --background: 270 3% 7%;
+    --foreground: 0 0% 100%;
+
+    --card: 240 4% 13%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 240 4% 13%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 283 39% 53%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 240 4% 16%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 240 3% 20%;
+    --muted-foreground: 0 0% 71%;
+
+    --accent: 283 39% 53%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 145 63% 49%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 45 93% 58%;
+    --warning-foreground: 0 0% 0%;
+
+    --info: 199 89% 48%;
+    --info-foreground: 0 0% 100%;
+
+    --border: 240 4% 20%;
+    --input: 240 4% 20%;
+    --ring: 283 39% 53%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 240 4% 10%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 283 39% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 4% 16%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 240 4% 20%;
+    --sidebar-ring: 283 39% 53%;
+  }
+
+  .dark {
+    --background: 270 3% 7%;
+    --foreground: 0 0% 100%;
+
+    --card: 240 4% 13%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 240 4% 13%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 283 39% 53%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 240 4% 16%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 240 3% 20%;
+    --muted-foreground: 0 0% 71%;
+
+    --accent: 283 39% 53%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 145 63% 49%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 45 93% 58%;
+    --warning-foreground: 0 0% 0%;
+
+    --info: 199 89% 48%;
+    --info-foreground: 0 0% 100%;
+
+    --border: 240 4% 20%;
+    --input: 240 4% 20%;
+    --ring: 283 39% 53%;
+
+    --sidebar-background: 240 4% 10%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 283 39% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 4% 16%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 240 4% 20%;
+    --sidebar-ring: 283 39% 53%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+    background: linear-gradient(180deg, hsl(270 3% 7%) 0%, hsl(240 4% 11%) 100%);
+    min-height: 100vh;
+  }
+}
+
+@layer utilities {
+  .gradient-background {
+    background: linear-gradient(180deg, hsl(270 3% 7%) 0%, hsl(240 4% 11%) 100%);
+  }
+
+  .card-gradient {
+    background: linear-gradient(135deg, hsl(240 4% 13%) 0%, hsl(240 4% 11%) 100%);
+  }
+
+  .status-present {
+    @apply bg-success text-success-foreground;
+  }
+
+  .status-leave {
+    @apply bg-info text-info-foreground;
+  }
+
+  .status-absent {
+    @apply bg-warning text-warning-foreground;
+  }
+}
