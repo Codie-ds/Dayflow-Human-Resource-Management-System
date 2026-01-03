@@ -1,8 +1,20 @@
 {
-  "name": "vite_react_shadcn_ts",
-  "private": true,
+  "name": "clear",
   "version": "0.0.0",
+  "private": true,
+  "description": "<br> # Dayflow - Human resourse management system",
+  "homepage": "https://github.com/Codie-ds/Dayflow-Human-Resource-Management-System#readme",
+  "bugs": {
+    "url": "https://github.com/Codie-ds/Dayflow-Human-Resource-Management-System/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Codie-ds/Dayflow-Human-Resource-Management-System.git"
+  },
+  "license": "ISC",
+  "author": "",
   "type": "module",
+  "main": "eslint.config.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
