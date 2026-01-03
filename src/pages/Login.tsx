@@ -10,31 +10,66 @@ export default function Login() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [serverError, setServerError] = useState('');
+
   const [formData, setFormData] = useState({
     loginId: '',
     password: '',
   });
+
   const [errors, setErrors] = useState({
     loginId: '',
     password: '',
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Basic validation
+
+    // Reset errors
+    setServerError('');
+
+    // Frontend validation
     const newErrors = { loginId: '', password: '' };
     if (!formData.loginId) newErrors.loginId = 'Login ID or Email is required';
     if (!formData.password) newErrors.password = 'Password is required';
-    
+
     setErrors(newErrors);
     if (newErrors.loginId || newErrors.password) return;
 
-    setIsLoading(true);
-    // Simulate login delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setIsLoading(false);
-    navigate('/dashboard');
+    try {
+      setIsLoading(true);
+
+      const response = await fetch('http://localhost:4000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          // Backend accepts either email or login_id
+          email: formData.loginId.includes('@') ? formData.loginId : undefined,
+          login_id: !formData.loginId.includes('@') ? formData.loginId : undefined,
+          password: formData.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Login failed');
+      }
+
+      // ✅ Store JWT token & user info
+      localStorage.setItem('token', data.data.token);
+      localStorage.setItem('user', JSON.stringify(data.data.user));
+
+      // ✅ Redirect to dashboard
+      navigate('/dashboard');
+
+    } catch (err) {
+      setServerError(err.message || 'Something went wrong');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -53,8 +88,14 @@ export default function Login() {
             </CardDescription>
           </div>
         </CardHeader>
+
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
+
+            {serverError && (
+              <p className="text-sm text-destructive text-center">{serverError}</p>
+            )}
+
             <div className="space-y-2">
               <Label htmlFor="loginId" className="text-foreground">
                 Login ID / Email
@@ -64,8 +105,9 @@ export default function Login() {
                 type="text"
                 placeholder="Enter Login ID or Email"
                 value={formData.loginId}
-                onChange={(e) => setFormData({ ...formData, loginId: e.target.value })}
-                className="bg-secondary border-border text-foreground placeholder:text-muted-foreground focus:ring-primary focus:border-primary"
+                onChange={(e) =>
+                  setFormData({ ...formData, loginId: e.target.value })
+                }
               />
               {errors.loginId && (
                 <p className="text-sm text-destructive">{errors.loginId}</p>
@@ -82,15 +124,17 @@ export default function Login() {
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Enter password"
                   value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="bg-secondary border-border text-foreground placeholder:text-muted-foreground focus:ring-primary focus:border-primary pr-10"
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
+                  className="pr-10"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
               {errors.password && (
@@ -100,7 +144,7 @@ export default function Login() {
 
             <Button
               type="submit"
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
+              className="w-full"
               disabled={isLoading}
             >
               {isLoading ? (
