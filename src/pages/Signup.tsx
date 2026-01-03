@@ -32,13 +32,46 @@ export default function Signup() {
   };
 
   const passwordStrength = getPasswordStrength(formData.password);
-
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setIsLoading(false);
-    navigate('/dashboard');
+
+    try {
+      const payload = {
+        companyName: formData.companyName,
+        fullName: formData.name,
+        email: formData.email,
+        phone: formData.phone
+      };
+
+      const res = await fetch("http://localhost:5000/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "Signup failed");
+        setIsLoading(false);
+        return;
+      }
+
+      alert(
+        `Organization created successfully!\n\nLogin ID: ${data.loginId}\nTemporary Password: ${data.tempPassword}\n\nPlease save these credentials.`
+      );
+
+      navigate("/login");
+    } catch (err) {
+      console.error(err);
+      alert("Backend server not reachable");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
