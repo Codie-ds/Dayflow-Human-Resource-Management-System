@@ -66,8 +66,12 @@ exports.login = (req, res) => {
 
             res.json({
                 message: "Login successful",
-                role: user.role,
-                isFirstLogin: user.is_first_login
+                user: {
+                    id: user.id,
+                    name: user.full_name,
+                    email: user.email,
+                    loginId: user.login_id
+                }
             });
         }
     );

@@ -11,7 +11,6 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { useRole } from '@/contexts/RoleContext';
-import { currentUser } from '@/lib/mockData';
 import { cn } from '@/lib/utils';
 
 const navItems = [
@@ -20,12 +19,21 @@ const navItems = [
   { label: 'Time Off', path: '/time-off' },
 ];
 
-export function TopNav() {
+interface TopNavProps {
+  user: {
+    name?: string;
+    email?: string;
+    avatar?: string;
+  };
+}
+
+export function TopNav({ user }: TopNavProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const { role, setRole, isAdmin, isHR } = useRole();
 
   const handleLogout = () => {
+    localStorage.removeItem("user");
     navigate('/login');
   };
 
@@ -43,8 +51,11 @@ export function TopNav() {
         {/* Center: Navigation */}
         <nav className="hidden md:flex items-center gap-1">
           {navItems.map((item) => {
-            const isActive = location.pathname === item.path || 
-              (item.path === '/dashboard' && location.pathname.startsWith('/employee'));
+            const isActive =
+              location.pathname === item.path ||
+              (item.path === '/dashboard' &&
+                location.pathname.startsWith('/employee'));
+
             return (
               <Link
                 key={item.path}
@@ -72,7 +83,9 @@ export function TopNav() {
             <Switch
               id="role-toggle"
               checked={isAdmin || isHR}
-              onCheckedChange={(checked) => setRole(checked ? 'admin' : 'employee')}
+              onCheckedChange={(checked) =>
+                setRole(checked ? 'admin' : 'employee')
+              }
               className="data-[state=checked]:bg-primary"
             />
             <Label htmlFor="role-toggle" className="text-xs text-muted-foreground">
@@ -85,9 +98,11 @@ export function TopNav() {
             <DropdownMenuTrigger asChild>
               <button className="flex items-center gap-2 rounded-full p-1 hover:bg-muted transition-colors">
                 <Avatar className="h-8 w-8 border border-border">
-                  <AvatarImage src={currentUser.avatar} alt={currentUser.name} />
+                  <AvatarImage src={user.avatar || ''} alt={user.name || 'User'} />
                   <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-                    {currentUser.name.split(' ').map(n => n[0]).join('')}
+                    {user.name
+                      ? user.name.split(' ').map((n) => n[0]).join('')
+                      : 'U'}
                   </AvatarFallback>
                 </Avatar>
                 <ChevronDown className="h-4 w-4 text-muted-foreground" />
@@ -95,8 +110,8 @@ export function TopNav() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56 bg-card border-border">
               <div className="px-2 py-1.5">
-                <p className="text-sm font-medium">{currentUser.name}</p>
-                <p className="text-xs text-muted-foreground">{currentUser.email}</p>
+                <p className="text-sm font-medium">{user.name || 'User'}</p>
+                <p className="text-xs text-muted-foreground">{user.email || ''}</p>
               </div>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => navigate('/profile')} className="cursor-pointer">

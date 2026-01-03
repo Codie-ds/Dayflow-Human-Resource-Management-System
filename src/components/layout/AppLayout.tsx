@@ -6,9 +6,11 @@ interface AppLayoutProps {
 }
 
 export function AppLayout({ children }: AppLayoutProps) {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+
   return (
     <div className="min-h-screen gradient-background">
-      <TopNav />
+      <TopNav user={user} />
       <main className="container px-4 py-6">
         {children}
       </main>

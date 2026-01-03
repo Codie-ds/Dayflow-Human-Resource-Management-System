@@ -21,20 +21,47 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Basic validation
+
+    // Basic validation (UNCHANGED)
     const newErrors = { loginId: '', password: '' };
     if (!formData.loginId) newErrors.loginId = 'Login ID or Email is required';
     if (!formData.password) newErrors.password = 'Password is required';
-    
+
     setErrors(newErrors);
     if (newErrors.loginId || newErrors.password) return;
 
     setIsLoading(true);
-    // Simulate login delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setIsLoading(false);
-    navigate('/dashboard');
+
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          loginId: formData.loginId,
+          password: formData.password
+        })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "Login failed");
+        setIsLoading(false);
+        return;
+      }
+
+      // ✅ STORE LOGGED-IN USER (THIS IS THE KEY CHANGE)
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      navigate('/dashboard');
+
+    } catch (err) {
+      alert("Backend server not reachable");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -53,6 +80,7 @@ export default function Login() {
             </CardDescription>
           </div>
         </CardHeader>
+
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
